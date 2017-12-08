@@ -1,5 +1,6 @@
 {
   "name": "tomb-of-annihilation-travelogue",
+  "homepage": "http://kevin-whitaker.net/toa-travel",
   "description": "Generates travel days for the Tomb of Annihilation campaign, with some additional rules from Kyle Maxwell (https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/)",
   "version": "0.0.130",
   "dependencies": {
