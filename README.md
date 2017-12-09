@@ -1,10 +1,9 @@
 ## Tomb Annihilation Travelogue
 
-Generates travel days for the ToA campaign, with some additional rules from Kyle
-Maxwell
-(https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/).
+Generates travel days for the ToA campaign, with some additional rules from
+[Kyle Maxwell](https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/).
 
-I did this because I'm abou to run ToA, and didn't want to bother with rolling
+I did this because I'm about to run ToA, and didn't want to bother with rolling
 as my group went. Also, I wanted to try [CodeSandbox](https://codesandbox.io).
 
 ### Getting Started
