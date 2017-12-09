@@ -81,6 +81,7 @@ export default class App extends Component {
               onBlur={this.handleChangeDays}
               min={1}
               max={MAX_DAYS}
+              step={1}
               id="day-count"
               className="w-25 ph2 pv1"
               defaultValue={dayCount}
