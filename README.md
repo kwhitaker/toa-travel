@@ -25,3 +25,4 @@ $ yarn build
 * [ ] Redo styles to be mobile-first
 * [ ] Remove react dependenedent library (feather icons)
 * [ ] Get a favicon
+* [ ] Implement proper analytics module

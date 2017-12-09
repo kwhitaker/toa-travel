@@ -4,6 +4,7 @@ import "./style";
 import { Component, render } from "preact";
 import { assoc, findIndex, propEq, range, update } from "ramda";
 import * as Lockr from "lockr";
+import { Github } from "react-feather";
 
 import { generateDay } from "./journey";
 import JourneyDay from "./journey-day";
@@ -107,6 +108,14 @@ export default class App extends Component {
           <p className="f7 tl avenir mh0">
             Tomb of Annihilation copyright{" "}
             <a href="http://wizards.com">Wizards of the Coast</a>.
+          </p>
+          <p className="tl avenir mh0">
+            <a
+              href="https://github.com/kwhitaker/toa-travel"
+              title="Fork on Github"
+            >
+              <Github width={18} height={18} className="black" />
+            </a>
           </p>
         </div>
       </section>
