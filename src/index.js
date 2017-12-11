@@ -1,10 +1,12 @@
 import "tachyons";
 import "./style";
+import * as refreshSvg from "./assets/icons/refresh-cw.svg";
+import * as ghSvg from "./assets/icons/github.svg";
+import * as logo from "./assets/toa-logo.png";
 
 import { Component, render } from "preact";
 import { assoc, findIndex, propEq, range, update } from "ramda";
 import * as Lockr from "lockr";
-import { Github } from "react-feather";
 
 import { generateDay } from "./journey";
 import JourneyDay from "./journey-day";
@@ -54,11 +56,7 @@ export default class App extends Component {
     return (
       <section className="flex flex-column mw-9 justify-center items-center">
         <h1 className="athelas f2 mt3 mb1">
-          <img
-            src="https://imgur.com/HxqNxtV.png"
-            width="500"
-            alt="Tomb of Annihilation"
-          />
+          <img src={logo} width="500" alt="Tomb of Annihilation" />
         </h1>
         <h3 className="avenir f4 mvt0 mb4 normal">
           Travelogue using hex-crawl rules by{" "}
@@ -86,6 +84,13 @@ export default class App extends Component {
               className="w-25 ph2 pv1"
               defaultValue={dayCount}
             />
+            <button
+              className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2"
+              title="Generate New Travelogue"
+              onClick={this.handleRegen}
+            >
+              <img src={refreshSvg} className="icon" />
+            </button>
           </div>
           <WeatherKey />
           <table className="avenir collapse ba br2 b--black-30 ttc mb3">
@@ -115,7 +120,7 @@ export default class App extends Component {
               href="https://github.com/kwhitaker/toa-travel"
               title="Fork on Github"
             >
-              <Github width={18} height={18} className="black" />
+              <img src={ghSvg} className="icon" />
             </a>
           </p>
         </div>
@@ -151,6 +156,12 @@ export default class App extends Component {
     this.setState({
       journey: update(idx, updated, journey)
     });
+  };
+
+  handleRegen = e => {
+    e.preventDefault();
+    Lockr.flush();
+    this.setState({ journey: genJourney(this.state.dayCount) });
   };
 }
 

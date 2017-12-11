@@ -22,6 +22,6 @@ $ yarn build
 ### Todo
 
 * [ ] Redo styles to be mobile-first
-* [ ] Remove react dependenedent library (feather icons)
-* [ ] Get a favicon
+* [*] Remove react dependenedent library (feather icons)
+* [*] Get a favicon
 * [ ] Implement proper analytics module

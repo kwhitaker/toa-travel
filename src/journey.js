@@ -10,7 +10,7 @@ const d100 = rollDie(100);
 
 const genWeather = () => {
   const roll = d20();
-  return roll <= 16 ? "normal" : roll <= 19 ? "rain" : "storm";
+  return roll <= 16 ? "sun" : roll <= 19 ? "rain" : "storm";
 };
 
 const toDirection = {

@@ -4,13 +4,12 @@
   "description": "Generates travel days for the Tomb of Annihilation campaign, with some additional rules from Kyle Maxwell (https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/)",
   "version": "0.0.130",
   "dependencies": {
-    "uuid": "3.1.0",
-    "tachyons": "4.9.0",
-    "react-feather": "1.0.7",
-    "ramda": "0.25.0",
-    "preact-compat": "3.17.0",
+    "lockr": "0.8.4",
     "preact": "8.2.5",
-    "lockr": "0.8.4"
+    "preact-compat": "3.17.0",
+    "ramda": "0.25.0",
+    "tachyons": "4.9.0",
+    "uuid": "3.1.0"
   },
   "devDependencies": {
     "eslint": "^4.5.0",
