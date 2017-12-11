@@ -22,7 +22,8 @@ const JourneyDay = props => {
     lost,
     encounters,
     weather,
-    onToggle
+    onToggle,
+    forMobile
   } = props;
 
   return (
@@ -33,8 +34,11 @@ const JourneyDay = props => {
       }`}
       onClick={onToggle}
     >
-      <td className={tdClass}>
-        <label for={id} className="pointer">
+      <td
+        className={`${tdClass} ${forMobile ? "br b--black-30" : ""}`}
+        style={{ height: forMobile ? "38px" : "" }}
+      >
+        <label for={id} className="pointer db w-auto-ns w3">
           <input
             type="checkbox"
             checked={hasPassed}
@@ -45,12 +49,18 @@ const JourneyDay = props => {
           {idx + 1}
         </label>
       </td>
-      <td className={`${tdClass} tc`}>
-        <img src={iconMap[weather]} className="icon" />
-      </td>
-      <td className={`${tdClass} tc`}>{distance.join(", ")}</td>
-      <td className={`${tdClass} tc`}>{lost.join(", ")}</td>
-      <td className={tdClass}>{parseEncounters(encounters)}</td>
+      {!forMobile && (
+        <td className={`${tdClass} tc`}>
+          <img src={iconMap[weather]} className="icon" />
+        </td>
+      )}
+      {!forMobile && <td className={`${tdClass} tc`}>{distance.join(", ")}</td>}
+      {!forMobile && <td className={`${tdClass} tc`}>{lost.join(", ")}</td>}
+      {!forMobile && (
+        <td className={tdClass}>
+          <span className="db w-auto-ns w4">{parseEncounters(encounters)}</span>
+        </td>
+      )}
     </tr>
   );
 };

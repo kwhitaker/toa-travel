@@ -1,8 +1,13 @@
 body {
   background-color: #fbfbfb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .icon {
   width: 18px;
   height: 18px;
+  min-width: 18px;
+  min-height: 18px;
 }

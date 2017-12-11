@@ -5,7 +5,17 @@ import * as ghSvg from "./assets/icons/github.svg";
 import * as logo from "./assets/toa-logo.png";
 
 import { Component, render } from "preact";
-import { assoc, findIndex, propEq, range, update } from "ramda";
+import {
+  addIndex,
+  assoc,
+  findIndex,
+  map,
+  pick,
+  pipe,
+  propEq,
+  range,
+  update
+} from "ramda";
 import * as Lockr from "lockr";
 
 import { generateDay } from "./journey";
@@ -22,13 +32,27 @@ const genJourney = days => range(0, days).map(generateDay);
 Lockr.prefix = "toa";
 
 export default class App extends Component {
+  mediaQuery = window.matchMedia("(max-device-width: 568px)");
+
   state = {
     dayCount: 1,
     journey: []
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      dayCount: 1,
+      journey: [],
+      isMobile: this.mediaQuery.matches
+    };
+  }
+
   componentDidMount() {
     const existing = Lockr.get("journey");
+    this.mediaQuery.addListener(this.handleResize);
+
     if (!existing) {
       this.setState({
         dayCount: DEFAULT_DAYS,
@@ -47,6 +71,10 @@ export default class App extends Component {
     Lockr.set("journey", JSON.stringify(this.state));
   }
 
+  componentWillMount() {
+    this.mediaQuery.removeListener(this.handleResize);
+  }
+
   render(props, { results = [] }) {
     const { dayCount, journey } = this.state;
     const elems = journey.map((d, i) => (
@@ -54,11 +82,11 @@ export default class App extends Component {
     ));
 
     return (
-      <section className="flex flex-column mw-9 justify-center items-center">
+      <section className="flex flex-column w-30-ns w-90 ma0-ns ma2 justify-center items-center">
         <h1 className="athelas f2 mt3 mb1">
           <img src={logo} width="500" alt="Tomb of Annihilation" />
         </h1>
-        <h3 className="avenir f4 mvt0 mb4 normal">
+        <h3 className="avenir f4-ns f5 mvt0 mb4-ns mb2 normal">
           Travelogue using hex-crawl rules by{" "}
           <a
             href="https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/"
@@ -67,9 +95,9 @@ export default class App extends Component {
             Kyle Maxwell
           </a>
         </h3>
-        <div className="mw-6">
+        <div className="w-100">
           <div className="w-100 mv2 pa0 flex items-center avenir">
-            <label htmlFor="day-count" className="mr1">
+            <label htmlFor="day-count" className="mr1 f5-ns f6">
               Days to Generate (max {MAX_DAYS}):
             </label>
             <input
@@ -81,7 +109,7 @@ export default class App extends Component {
               max={MAX_DAYS}
               step={1}
               id="day-count"
-              className="w-25 ph2 pv1"
+              className="w-25 ph2 pv1 ba b--black-10"
               defaultValue={dayCount}
             />
             <button
@@ -93,20 +121,25 @@ export default class App extends Component {
             </button>
           </div>
           <WeatherKey />
-          <table className="avenir collapse ba br2 b--black-30 ttc mb3">
-            <thead>
-              <th className={thClass}>Day</th>
-              <th className={thClass}>Weather</th>
-              <th className={`${thClass} tc`}>
-                Distance <small>(slow, fast)</small>
-              </th>
-              <th className={`${thClass} tc`}>
-                Direction <small>(if lost)</small>
-              </th>
-              <th className={thClass}>Encounters</th>
-            </thead>
-            <tbody>{elems}</tbody>
-          </table>
+          <div className="w-100 ba b--black-30 mb3 relative f5-ns f6">
+            <div className="w-100 overflow-x-auto">
+              <table className="avenir collapse w-100-ns w-auto">
+                <thead>
+                  <th className={thClass}>Day</th>
+                  <th className={thClass}>Weather</th>
+                  <th className={`${thClass} tc`}>
+                    Distance <small>(slow, fast)</small>
+                  </th>
+                  <th className={`${thClass} tc`}>
+                    Direction <small>(if lost)</small>
+                  </th>
+                  <th className={`${thClass}`}>Encounters</th>
+                </thead>
+                <tbody>{elems}</tbody>
+              </table>
+              {this.renderMobileTable()}
+            </div>
+          </div>
           <p className="f7 tl avenir mh0">
             Code written by{" "}
             <a href="http://kevin-whitaker.net">Kevin Whitaker</a>.
@@ -125,6 +158,36 @@ export default class App extends Component {
           </p>
         </div>
       </section>
+    );
+  }
+
+  renderMobileTable() {
+    const { isMobile, journey } = this.state;
+    if (!isMobile || !journey.length) {
+      return null;
+    }
+
+    const rows = pipe(
+      map(pick(["hasPassed", "id"])),
+      addIndex(map)((d, i) => (
+        <JourneyDay
+          {...d}
+          idx={i}
+          onToggle={() => this.handleToggleDay(d.id)}
+          forMobile={true}
+        />
+      ))
+    )(journey);
+
+    return (
+      <table className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white">
+        <thead>
+          <th className={thClass} style={{ height: "48px" }}>
+            Day
+          </th>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
     );
   }
 
@@ -162,6 +225,12 @@ export default class App extends Component {
     e.preventDefault();
     Lockr.flush();
     this.setState({ journey: genJourney(this.state.dayCount) });
+  };
+
+  handleResize = e => {
+    this.setState({
+      isMobile: e.matches
+    });
   };
 }
 
