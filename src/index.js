@@ -33,21 +33,25 @@ const genJourney = days => range(0, days).map(generateDay);
 Lockr.prefix = "toa";
 
 export default class App extends Component {
-  mediaQuery = window.matchMedia("(max-device-width: 568px)");
+  mediaQuery;
 
   constructor(props) {
     super(props);
 
+    if (typeof window !== "undefined") {
+      this.mediaQuery = window.matchMedia("(max-device-width: 568px)");
+    }
+
     this.state = {
       dayCount: DEFAULT_DAYS,
       journey: [],
-      isMobile: this.mediaQuery.matches
+      isMobile: this.mediaQuery && this.mediaQuery.matches
     };
   }
 
   componentDidMount() {
     const existing = Lockr.get("journey");
-    this.mediaQuery.addListener(this.handleResize);
+    this.mediaQuery && this.mediaQuery.addListener(this.handleResize);
 
     if (!existing) {
       this.setState({
@@ -66,8 +70,8 @@ export default class App extends Component {
     Lockr.set("journey", JSON.stringify(dissoc("isMobile", this.state)));
   }
 
-  componentWillMount() {
-    this.mediaQuery.removeListener(this.handleResize);
+  componentWillUnmount() {
+    this.mediaQuery && this.mediaQuery.removeListener(this.handleResize);
   }
 
   render(props, { results = [] }) {
@@ -175,7 +179,10 @@ export default class App extends Component {
     )(journey);
 
     return (
-      <table className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white mobile-overlay">
+      <table
+        aria-hidden={true}
+        className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white mobile-overlay"
+      >
         <thead>
           <th className={thClass} style={{ height: "48px" }}>
             Day
