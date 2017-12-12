@@ -8,6 +8,7 @@ import { Component, render } from "preact";
 import {
   addIndex,
   assoc,
+  dissoc,
   findIndex,
   map,
   pick,
@@ -34,16 +35,11 @@ Lockr.prefix = "toa";
 export default class App extends Component {
   mediaQuery = window.matchMedia("(max-device-width: 568px)");
 
-  state = {
-    dayCount: 1,
-    journey: []
-  };
-
   constructor(props) {
     super(props);
 
     this.state = {
-      dayCount: 1,
+      dayCount: DEFAULT_DAYS,
       journey: [],
       isMobile: this.mediaQuery.matches
     };
@@ -55,7 +51,6 @@ export default class App extends Component {
 
     if (!existing) {
       this.setState({
-        dayCount: DEFAULT_DAYS,
         journey: genJourney(DEFAULT_DAYS)
       });
     } else {
@@ -68,7 +63,7 @@ export default class App extends Component {
   }
 
   componentDidUpdate(lastProps, lastState) {
-    Lockr.set("journey", JSON.stringify(this.state));
+    Lockr.set("journey", JSON.stringify(dissoc("isMobile", this.state)));
   }
 
   componentWillMount() {
@@ -82,7 +77,7 @@ export default class App extends Component {
     ));
 
     return (
-      <section className="flex flex-column w-30-ns w-90 ma0-ns ma2 justify-center items-center">
+      <section className="flex flex-column w-50-l w-80-ns w-90 ma0-ns ma2 justify-center items-center">
         <h1 className="athelas f2 mt3 mb1">
           <img src={logo} width="500" alt="Tomb of Annihilation" />
         </h1>
@@ -180,7 +175,7 @@ export default class App extends Component {
     )(journey);
 
     return (
-      <table className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white">
+      <table className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white mobile-overlay">
         <thead>
           <th className={thClass} style={{ height: "48px" }}>
             Day

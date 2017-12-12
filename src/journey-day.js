@@ -38,7 +38,7 @@ const JourneyDay = props => {
         className={`${tdClass} ${forMobile ? "br b--black-30" : ""}`}
         style={{ height: forMobile ? "38px" : "" }}
       >
-        <label for={id} className="pointer db w-auto-ns w3">
+        <label for={id} className="pointer db w-auto-l w4-m w3">
           <input
             type="checkbox"
             checked={hasPassed}
@@ -58,7 +58,9 @@ const JourneyDay = props => {
       {!forMobile && <td className={`${tdClass} tc`}>{lost.join(", ")}</td>}
       {!forMobile && (
         <td className={tdClass}>
-          <span className="db w-auto-ns w4">{parseEncounters(encounters)}</span>
+          <span className="db w-auto-l w6-m w4">
+            {parseEncounters(encounters)}
+          </span>
         </td>
       )}
     </tr>
