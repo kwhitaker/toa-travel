@@ -3,6 +3,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+
+  &.modal-open {
+    overflow: hidden;
+  }
 }
 
 .icon {
@@ -14,4 +18,10 @@ body {
 
 .mobile-overlay {
   box-shadow: 6px 0 5px -5px rgba(0, 0, 0, 0.3);
+}
+
+.encounter-details-overlay {
+  position: fixed;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 10;
 }

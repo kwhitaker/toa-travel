@@ -8,9 +8,10 @@ import { Component, render } from "preact";
 import {
   addIndex,
   assoc,
-  dissoc,
   findIndex,
+  isNil,
   map,
+  omit,
   pick,
   pipe,
   propEq,
@@ -22,6 +23,7 @@ import * as Lockr from "lockr";
 import { generateDay } from "./journey";
 import JourneyDay from "./journey-day";
 import WeatherKey from "./weather-key";
+import EncounterDetails from "./encounter-details";
 
 const MAX_DAYS = 365;
 const DEFAULT_DAYS = 79;
@@ -45,7 +47,8 @@ export default class App extends Component {
     this.state = {
       dayCount: DEFAULT_DAYS,
       journey: [],
-      isMobile: this.mediaQuery && this.mediaQuery.matches
+      isMobile: this.mediaQuery && this.mediaQuery.matches,
+      visibleDetails: null
     };
   }
 
@@ -67,7 +70,16 @@ export default class App extends Component {
   }
 
   componentDidUpdate(lastProps, lastState) {
-    Lockr.set("journey", JSON.stringify(dissoc("isMobile", this.state)));
+    Lockr.set(
+      "journey",
+      JSON.stringify(omit(["isMobile", "visibleDetails"], this.state))
+    );
+
+    if (!lastState.visibleDetails && this.state.visibleDetails) {
+      document.querySelector("body").classList.add("modal-open");
+    } else {
+      document.querySelector("body").classList.remove("modal-open");
+    }
   }
 
   componentWillUnmount() {
@@ -75,13 +87,24 @@ export default class App extends Component {
   }
 
   render(props, { results = [] }) {
-    const { dayCount, journey } = this.state;
+    const { dayCount, journey, visibleDetails } = this.state;
     const elems = journey.map((d, i) => (
-      <JourneyDay {...d} idx={i} onToggle={() => this.handleToggleDay(d.id)} />
+      <JourneyDay
+        {...d}
+        idx={i}
+        onToggle={() => this.handleToggleDay(d.id)}
+        onToggleDetails={() => this.handleDetailsToggled(d.encounterDetails)}
+      />
     ));
 
     return (
       <section className="flex flex-column w-50-l w-80-ns w-90 ma0-ns ma2 justify-center items-center">
+        {!isNil(visibleDetails) && (
+          <EncounterDetails
+            details={visibleDetails}
+            onRequestClose={() => this.handleDetailsToggled()}
+          />
+        )}
         <h1 className="athelas f2 mt3 mb1">
           <img src={logo} width="500" alt="Tomb of Annihilation" />
         </h1>
@@ -232,6 +255,12 @@ export default class App extends Component {
   handleResize = e => {
     this.setState({
       isMobile: e.matches
+    });
+  };
+
+  handleDetailsToggled = (visibleDetails = null) => {
+    this.setState({
+      visibleDetails
     });
   };
 }

@@ -1,11 +1,12 @@
-import { all, equals } from "ramda";
+import { allNone } from "./journey";
 import * as sunSvg from "./assets/icons/sun.svg";
 import * as rainSvg from "./assets/icons/cloud-rain.svg";
 import * as stormSvg from "./assets/icons/cloud-lightning.svg";
+import * as eyeSvg from "./assets/icons/eye.svg";
 
 const tdClass = "pv2 ph3";
 const parseEncounters = encounters =>
-  all(equals("none"))(encounters) ? `--` : encounters.join(", ");
+  allNone(encounters) ? `--` : encounters.join(", ");
 
 const iconMap = {
   sun: sunSvg,
@@ -23,19 +24,17 @@ const JourneyDay = props => {
     encounters,
     weather,
     onToggle,
+    onToggleDetails,
     forMobile
   } = props;
 
   return (
     <tr
       key={id}
-      className={`striped--light-gray pointer journey-day ${
-        hasPassed ? "o-30" : ""
-      }`}
-      onClick={onToggle}
+      className={`striped--light-gray journey-day ${hasPassed ? "o-30" : ""}`}
     >
       <td
-        className={`${tdClass} ${forMobile ? "br b--black-30" : ""}`}
+        className={`${tdClass} pointer ${forMobile ? "br b--black-30" : ""}`}
         style={{ height: forMobile ? "38px" : "" }}
       >
         <label for={id} className="pointer db w-auto-l w4-m w3">
@@ -44,6 +43,7 @@ const JourneyDay = props => {
             checked={hasPassed}
             id={id}
             className="pointer"
+            onChange={onToggle}
           />
           &nbsp;
           {idx + 1}
@@ -57,10 +57,15 @@ const JourneyDay = props => {
       {!forMobile && <td className={`${tdClass} tc`}>{distance.join(", ")}</td>}
       {!forMobile && <td className={`${tdClass} tc`}>{lost.join(", ")}</td>}
       {!forMobile && (
-        <td className={tdClass}>
-          <span className="db w-auto-l w6-m w4">
-            {parseEncounters(encounters)}
-          </span>
+        <td className={`${tdClass} flex justify-between`}>
+          <span className="w-100-l w6-m w4">{parseEncounters(encounters)}</span>
+          {!allNone(encounters) && (
+            <img
+              src={eyeSvg}
+              className="icon pointer"
+              onClick={onToggleDetails}
+            />
+          )}
         </td>
       )}
     </tr>
