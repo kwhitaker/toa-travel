@@ -25,8 +25,8 @@
   },
   "scripts": {
     "test": "eslint . && preact test",
-    "start": "if-env NODE_ENV=production && npm run -s serve || npm run -s dev",
-    "build": "preact build",
+    "start": "if-env NODE_ENV=production && yarn --silent serve || yarn --silent dev",
+    "build": "preact build --template src/template.html",
     "serve": "preact build && preact serve",
     "dev": "preact watch"
   },
