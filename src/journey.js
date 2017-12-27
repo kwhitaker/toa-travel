@@ -1,5 +1,6 @@
 import { all, assoc, equals, findLast, pipe, reject } from "ramda";
 import { v4 } from "uuid";
+var seedrandom = require('seedrandom');
 
 const genRandomInt = max => Math.floor(Math.random() * (max - 1 + 1)) + 1;
 const rollDie = dieCount => () => genRandomInt(dieCount);
@@ -32,7 +33,7 @@ const genWandering = () => [0, 1].map(() => toDirection[d6()]);
 const genEncounter = () => (d20() >= 16 ? d100() : "none");
 
 const getWeather = day => assoc("weather", genWeather(), day);
-export const setSeed = seed => { seedrandom(seed, {global: true}); }
+export const setSeed = seed => { seedrandom(seed); }
 const getPace = day =>
   assoc("distance", [coinToss() === 1 ? 0 : 1, coinToss()], day);
 const getLost = day => assoc("lost", genWandering(), day);

@@ -148,7 +148,7 @@ export default class App extends Component {
               onKeyDown={this.handleKeyDown}
               onBlur={this.handleChangeSeed}
               id="seed-random"
-              className="w-25 pv1 ba b--black-10"
+              className="w-25  pv1 ba b--black-10"
               defaultValue={seed}
             />
             <button
