@@ -33,7 +33,7 @@ const genWandering = () => [0, 1].map(() => toDirection[d6()]);
 const genEncounter = () => (d20() >= 16 ? d100() : "none");
 
 const getWeather = day => assoc("weather", genWeather(), day);
-export const setSeed = seed => { seedrandom(seed); }
+export const setSeed = seed => { seedrandom(seed, {global: true}); }
 const getPace = day =>
   assoc("distance", [coinToss() === 1 ? 0 : 1, coinToss()], day);
 const getLost = day => assoc("lost", genWandering(), day);
