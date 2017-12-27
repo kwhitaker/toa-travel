@@ -35,7 +35,7 @@ const JourneyDay = props => {
     >
       <td
         className={`${tdClass} pointer ${forMobile ? "br b--black-30" : ""}`}
-        style={{ height: forMobile ? "38px" : "" }}
+        style={{ height: forMobile ? "37px" : "" }}
       >
         <label for={id} className="pointer db w-auto-l w4-m w3">
           <input

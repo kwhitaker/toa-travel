@@ -31,10 +31,10 @@ const DEFAULT_DAYS = 79;
 
 const thClass = "bg-black light-gray pv2 ph3 fw3 f6 tl";
 
-const genJourney = (days, seed) => { 
-  setSeed(seed);  
-  return range(0, days).map(generateDay); 
-}
+const genJourney = (days, seed) => {
+  setSeed(seed);
+  return range(0, days).map(generateDay);
+};
 
 Lockr.prefix = "toa";
 
@@ -123,41 +123,45 @@ export default class App extends Component {
           </a>
         </h3>
         <div className="w-100">
-          <div className="w-100 mv2 pa0 flex items-center avenir">
-            <label htmlFor="day-count" className="mr1 f5-ns f6">
-              Days to Generate (max {MAX_DAYS}):
-            </label>
-            <input
-              type="number"
-              onChange={this.handleChangeDays}
-              onKeyDown={this.handleKeyDown}
-              onBlur={this.handleChangeDays}
-              min={1}
-              max={MAX_DAYS}
-              step={1}
-              id="day-count"
-              className="w-25 ph2 pv1 ba b--black-10"
-              defaultValue={dayCount}
-            />
-            <label htmlFor="day-count" className="mr1 ph2 f5-ns f6">
-              Seed:
-            </label>
-            <input
-              type="text"
-              onChange={this.handleChangeSeed}
-              onKeyDown={this.handleKeyDown}
-              onBlur={this.handleChangeSeed}
-              id="seed-random"
-              className="w-25  pv1 ba b--black-10"
-              defaultValue={seed}
-            />
-            <button
-              className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2"
-              title="Generate New Travelogue"
-              onClick={this.handleRegen}
-            >
-              <img src={refreshSvg} className="icon" />
-            </button>
+          <div className="w-100 mv2 pa0 flex items-center flex-row-ns flex-column avenir">
+            <div className="w-auto-ns w-100 mh2-ns mv2">
+              <label htmlFor="day-count" className="mr1 f5-ns f6">
+                Days to Generate (max {MAX_DAYS}):
+              </label>
+              <input
+                type="number"
+                onChange={this.handleChangeDays}
+                onKeyDown={this.handleKeyDown}
+                onBlur={this.handleChangeDays}
+                min={1}
+                max={MAX_DAYS}
+                step={1}
+                id="day-count"
+                className="w-25 ph2 pv1 ba b--black-10"
+                defaultValue={dayCount}
+              />
+            </div>
+            <div className="w-auto-ns w-100 mh2-ns mv2">
+              <label htmlFor="seed-random" className="mr1 ph2-ns f5-ns f6">
+                Seed:
+              </label>
+              <input
+                type="text"
+                onChange={this.handleChangeSeed}
+                onKeyDown={this.handleKeyDown}
+                onBlur={this.handleChangeSeed}
+                id="seed-random"
+                className="w-33 pv1 ba b--black-10"
+                defaultValue={seed}
+              />
+              <button
+                className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2"
+                title="Generate New Travelogue"
+                onClick={this.handleRegen}
+              >
+                <img src={refreshSvg} className="icon" />
+              </button>
+            </div>
           </div>
           <WeatherKey />
           <div className="w-100 ba b--black-30 mb3 relative f5-ns f6">
@@ -167,10 +171,10 @@ export default class App extends Component {
                   <th className={thClass}>Day</th>
                   <th className={thClass}>Weather</th>
                   <th className={`${thClass} tc`}>
-                    Distance <small>(slow, fast)</small>
+                    Distance <small className="nowrap">(slow, fast)</small>
                   </th>
                   <th className={`${thClass} tc`}>
-                    Direction <small>(if lost)</small>
+                    Direction <small className="nowrap">(if lost)</small>
                   </th>
                   <th className={`${thClass}`}>Encounters</th>
                 </thead>
@@ -278,7 +282,9 @@ export default class App extends Component {
   handleRegen = e => {
     e.preventDefault();
     Lockr.flush();
-    this.setState({ journey: genJourney(this.state.dayCount, this.state.seed) });
+    this.setState({
+      journey: genJourney(this.state.dayCount, this.state.seed)
+    });
   };
 
   handleResize = e => {
