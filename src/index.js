@@ -251,7 +251,6 @@ export default class App extends Component {
     if (seed == "" || seed == undefined) {
       return;
     }
-    Math.seedrandom(seed);
 
     this.setState({
       seed

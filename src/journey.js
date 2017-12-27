@@ -1,6 +1,5 @@
 import { all, assoc, equals, findLast, pipe, reject } from "ramda";
 import { v4 } from "uuid";
-var seedrandom = require('seedrandom');
 
 const genRandomInt = max => Math.floor(Math.random() * (max - 1 + 1)) + 1;
 const rollDie = dieCount => () => genRandomInt(dieCount);
