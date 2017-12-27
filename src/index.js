@@ -20,6 +20,7 @@ import {
 } from "ramda";
 import * as Lockr from "lockr";
 
+import { setSeed } from "./journey";
 import { generateDay } from "./journey";
 import JourneyDay from "./journey-day";
 import WeatherKey from "./weather-key";
@@ -30,7 +31,10 @@ const DEFAULT_DAYS = 79;
 
 const thClass = "bg-black light-gray pv2 ph3 fw3 f6 tl";
 
-const genJourney = days => range(0, days).map(generateDay);
+const genJourney = (days, seed) => { 
+  setSeed(seed);  
+  return range(0, days).map(generateDay); 
+}
 
 Lockr.prefix = "toa";
 
@@ -48,7 +52,8 @@ export default class App extends Component {
       dayCount: DEFAULT_DAYS,
       journey: [],
       isMobile: this.mediaQuery && this.mediaQuery.matches,
-      visibleDetails: null
+      visibleDetails: null,
+      seed: Math.floor(Math.random() * 1000000)
     };
   }
 
@@ -58,7 +63,7 @@ export default class App extends Component {
 
     if (!existing) {
       this.setState({
-        journey: genJourney(DEFAULT_DAYS)
+        journey: genJourney(DEFAULT_DAYS, this.state.seed)
       });
     } else {
       this.setState(JSON.parse(existing));
@@ -87,7 +92,7 @@ export default class App extends Component {
   }
 
   render(props, { results = [] }) {
-    const { dayCount, journey, visibleDetails } = this.state;
+    const { dayCount, journey, visibleDetails, seed } = this.state;
     const elems = journey.map((d, i) => (
       <JourneyDay
         {...d}
@@ -133,6 +138,18 @@ export default class App extends Component {
               id="day-count"
               className="w-25 ph2 pv1 ba b--black-10"
               defaultValue={dayCount}
+            />
+            <label htmlFor="day-count" className="mr1 ph2 f5-ns f6">
+              Seed:
+            </label>
+            <input
+              type="text"
+              onChange={this.handleChangeSeed}
+              onKeyDown={this.handleKeyDown}
+              onBlur={this.handleChangeSeed}
+              id="seed-random"
+              className="w-25  pv1 ba b--black-10"
+              defaultValue={seed}
             />
             <button
               className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2"
@@ -218,13 +235,25 @@ export default class App extends Component {
 
   handleChangeDays = e => {
     const dayCount = parseInt(e.currentTarget.value);
+    const { seed } = this.state;
     if (dayCount <= 0 || isNaN(dayCount) || dayCount > MAX_DAYS) {
       return;
     }
 
     this.setState({
       dayCount,
-      journey: genJourney(dayCount)
+      journey: genJourney(dayCount, seed)
+    });
+  };
+
+  handleChangeSeed = e => {
+    const seed = e.currentTarget.value;
+    if (seed == "" || seed == undefined) {
+      return;
+    }
+
+    this.setState({
+      seed
     });
   };
 
@@ -249,7 +278,7 @@ export default class App extends Component {
   handleRegen = e => {
     e.preventDefault();
     Lockr.flush();
-    this.setState({ journey: genJourney(this.state.dayCount) });
+    this.setState({ journey: genJourney(this.state.dayCount, this.state.seed) });
   };
 
   handleResize = e => {

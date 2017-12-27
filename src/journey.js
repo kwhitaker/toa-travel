@@ -1,5 +1,6 @@
 import { all, assoc, equals, findLast, pipe, reject } from "ramda";
 import { v4 } from "uuid";
+import * as seedrandom from 'seedrandom'
 
 const genRandomInt = max => Math.floor(Math.random() * (max - 1 + 1)) + 1;
 const rollDie = dieCount => () => genRandomInt(dieCount);
@@ -32,6 +33,10 @@ const genWandering = () => [0, 1].map(() => toDirection[d6()]);
 const genEncounter = () => (d20() >= 16 ? d100() : "none");
 
 const getWeather = day => assoc("weather", genWeather(), day);
+
+// seedrandom affects the Math prototype in order to provide preditable pseudorandom sequences.
+export const setSeed = seed => { seedrandom(seed, {global: true}); }
+
 const getPace = day =>
   assoc("distance", [coinToss() === 1 ? 0 : 1, coinToss()], day);
 const getLost = day => assoc("lost", genWandering(), day);
