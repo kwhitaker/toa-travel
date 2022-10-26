@@ -1,6 +1,6 @@
-import * as sunSvg from "./assets/icons/sun.svg";
-import * as rainSvg from "./assets/icons/cloud-rain-wht.svg";
-import * as stormSvg from "./assets/icons/cloud-lightning-wht.svg";
+import sunSvg from "./assets/icons/sun.svg";
+import rainSvg from "./assets/icons/cloud-rain-wht.svg";
+import stormSvg from "./assets/icons/cloud-lightning-wht.svg";
 
 const liClass = "flex w-third";
 const iconClass = "flex light-gray w-25 items-center justify-center ph0-ns ph2";

@@ -1,20 +1,20 @@
 import { allNone } from "./journey";
-import * as sunSvg from "./assets/icons/sun.svg";
-import * as rainSvg from "./assets/icons/cloud-rain.svg";
-import * as stormSvg from "./assets/icons/cloud-lightning.svg";
-import * as eyeSvg from "./assets/icons/eye.svg";
+import sunSvg from "./assets/icons/sun.svg";
+import rainSvg from "./assets/icons/cloud-rain.svg";
+import stormSvg from "./assets/icons/cloud-lightning.svg";
+import eyeSvg from "./assets/icons/eye.svg";
 
 const tdClass = "pv2 ph3";
-const parseEncounters = encounters =>
+const parseEncounters = (encounters) =>
   allNone(encounters) ? `--` : encounters.join(", ");
 
 const iconMap = {
   sun: sunSvg,
   rain: rainSvg,
-  storm: stormSvg
+  storm: stormSvg,
 };
 
-const JourneyDay = props => {
+const JourneyDay = (props) => {
   const {
     id,
     idx,
@@ -25,7 +25,7 @@ const JourneyDay = props => {
     weather,
     onToggle,
     onToggleDetails,
-    forMobile
+    forMobile,
   } = props;
 
   return (

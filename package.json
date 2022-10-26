@@ -3,26 +3,29 @@
   "homepage": "http://kevin-whitaker.net/toa-travel",
   "description": "Generates travel days for the Tomb of Annihilation campaign, with some additional rules from Kyle Maxwell (https://skaldforge.wordpress.com/2017/10/02/tomb-of-annihilation-hex-crawl-procedure/)",
   "version": "0.0.130",
+  "engines": {
+    "node": ">=16.17.0"
+  },
   "dependencies": {
-    "lockr": "0.8.4",
-    "preact": "8.2.5",
-    "preact-compat": "3.17.0",
-    "ramda": "0.25.0",
-    "seedrandom": "2.4.3",
-    "tachyons": "4.9.0",
-    "uuid": "3.1.0"
+    "lockr": "0.9.0-beta.0",
+    "preact": "10.11.2",
+    "preact-compat": "3.19.0",
+    "ramda": "0.28.0",
+    "seedrandom": "3.0.5",
+    "tachyons": "4.12.0",
+    "uuid": "9.0.0"
   },
   "devDependencies": {
-    "eslint": "^4.5.0",
-    "eslint-config-synacor": "^1.1.0",
+    "eslint": "^8.26.0",
+    "eslint-config-synacor": "^3.0.5",
     "if-env": "^1.0.0",
-    "less": "^2.7.2",
-    "less-loader": "^4.0.5",
-    "node-sass": "^4.5.3",
-    "preact-cli": "^1.4.1",
-    "sass-loader": "^6.0.6",
-    "stylus": "^0.54.5",
-    "stylus-loader": "^3.0.1"
+    "less": "^4.1.3",
+    "less-loader": "^11.1.0",
+    "node-sass": "^7.0.3",
+    "preact-cli": "^3.4.1",
+    "sass-loader": "10",
+    "stylus": "^0.59.0",
+    "stylus-loader": "^7.1.0"
   },
   "scripts": {
     "test": "eslint . && preact test",
