@@ -1,7 +1,7 @@
 {
   "name": "Tomb of Annihilation Travelogue",
   "short_name": "Tomb of Annihilation Travelogue",
-  "start_url": "http://kevin-whitaker.net/toa-travel/",
+  "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#fff",
