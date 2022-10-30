@@ -1,10 +1,7 @@
 import "tachyons";
 import "./style";
-import refreshSvg from "./assets/icons/refresh-cw.svg";
-import ghSvg from "./assets/icons/github.svg";
 import logo from "./assets/toa-logo.png";
-
-import { Component, render } from "preact";
+import { Component } from "preact";
 import {
   addIndex,
   assoc,
@@ -25,6 +22,8 @@ import { generateDay } from "./journey";
 import JourneyDay from "./journey-day";
 import WeatherKey from "./weather-key";
 import EncounterDetails from "./encounter-details";
+import { Github, RefreshCw, Upload } from "preact-feather";
+import ImportModal from "./import-modal";
 
 const MAX_DAYS = 365;
 const DEFAULT_DAYS = 79;
@@ -37,8 +36,6 @@ const genJourney = (days, seed) => {
   setSeed(seed);
   return range(0, days).map(generateDay);
 };
-
-Lockr.setPrefix("toa");
 
 export class App extends Component {
   mediaQuery;
@@ -56,6 +53,7 @@ export class App extends Component {
       isMobile: this.mediaQuery && this.mediaQuery.matches,
       visibleDetails: null,
       seed: genSeed(),
+      showImport: false,
     };
   }
 
@@ -68,7 +66,7 @@ export class App extends Component {
         journey: genJourney(DEFAULT_DAYS, this.state.seed),
       });
     } else {
-      this.setState(JSON.parse(existing));
+      this.setState(existing);
     }
   }
 
@@ -79,7 +77,7 @@ export class App extends Component {
   componentDidUpdate(lastProps, lastState) {
     Lockr.set(
       "journey",
-      JSON.stringify(omit(["isMobile", "visibleDetails"], this.state))
+      omit(["isMobile", "visibleDetails", "showImport"], this.state)
     );
 
     if (!lastState.visibleDetails && this.state.visibleDetails) {
@@ -94,7 +92,7 @@ export class App extends Component {
   }
 
   render(props, { results = [] }) {
-    const { dayCount, journey, visibleDetails, seed } = this.state;
+    const { dayCount, journey, visibleDetails, seed, showImport } = this.state;
     const elems = journey.map((d, i) => (
       <JourneyDay
         {...d}
@@ -126,7 +124,7 @@ export class App extends Component {
         </h3>
         <div className="w-100">
           <div className="w-100 mv2 pa0 flex items-center flex-row-ns flex-column avenir">
-            <div className="w-auto-ns w-100 mh2-ns mv2">
+            <div className="w-auto-ns w-100 mh2-ns mv2 flex flex-row items-center">
               <label htmlFor="day-count" className="mr1 f5-ns f6">
                 Days to Generate (max {MAX_DAYS}):
               </label>
@@ -143,7 +141,7 @@ export class App extends Component {
                 defaultValue={dayCount}
               />
             </div>
-            <div className="w-auto-ns w-100 mh2-ns mv2">
+            <div className="w-auto-ns w-100 mh2-ns mv2 flex flex-row items-center">
               <label htmlFor="seed-random" className="mr1 ph2-ns f5-ns f6">
                 Seed:
               </label>
@@ -157,11 +155,19 @@ export class App extends Component {
                 defaultValue={seed}
               />
               <button
-                className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2"
+                className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2 flex items-center justify-center"
                 title="Generate New Travelogue"
                 onClick={this.handleRegen}
               >
-                <img src={refreshSvg} className="icon" />
+                <RefreshCw size={18} />
+              </button>
+              <button
+                className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2 flex items-center justify-center"
+                title="Import Data From Previous Version"
+                onClick={this.handleImportToggled}
+              >
+                <span className="mr2">Import Data</span>
+                <Upload size={18} />
               </button>
             </div>
           </div>
@@ -200,10 +206,16 @@ export class App extends Component {
               href="https://github.com/kwhitaker/toa-travel"
               title="Fork on Github"
             >
-              <img src={ghSvg} className="icon" />
+              <Github size={18} />
             </a>
           </p>
         </div>
+        {showImport && (
+          <ImportModal
+            onRequestClose={this.handleImportToggled}
+            onImport={this.handleIport}
+          />
+        )}
       </section>
     );
   }
@@ -232,9 +244,11 @@ export class App extends Component {
         className="avenir collapse w-auto absolute top-0 left-0 h-100 bg-white mobile-overlay"
       >
         <thead>
-          <th className={thClass} style={{ height: "48px" }}>
-            Day
-          </th>
+          <tr>
+            <th className={thClass} style={{ height: "48px" }}>
+              Day
+            </th>
+          </tr>
         </thead>
         <tbody>{rows}</tbody>
       </table>
@@ -320,6 +334,20 @@ export class App extends Component {
   handleDetailsToggled = (visibleDetails = null) => {
     this.setState({
       visibleDetails,
+    });
+  };
+
+  handleImportToggled = () => {
+    this.setState({
+      showImport: !this.state.showImport,
+    });
+  };
+
+  handleIport = (next) => {
+    this.setState({
+      ...this.state,
+      ...next,
+      showImport: false,
     });
   };
 }
