@@ -38,7 +38,7 @@ const genJourney = (days, seed) => {
   return range(0, days).map(generateDay);
 };
 
-Lockr.prefix = "toa";
+Lockr.setPrefix("toa");
 
 export class App extends Component {
   mediaQuery;
