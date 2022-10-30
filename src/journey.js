@@ -1,9 +1,9 @@
 import { all, assoc, equals, findLast, pipe, reject } from "ramda";
 import { v4 } from "uuid";
-import * as seedrandom from 'seedrandom'
+import * as seedrandom from "seedrandom";
 
-const genRandomInt = max => Math.floor(Math.random() * (max - 1 + 1)) + 1;
-const rollDie = dieCount => () => genRandomInt(dieCount);
+const genRandomInt = (max) => Math.floor(Math.random() * (max - 1 + 1)) + 1;
+const rollDie = (dieCount) => () => genRandomInt(dieCount);
 const coinToss = rollDie(2);
 const d4 = rollDie(4);
 const d6 = rollDie(6);
@@ -26,21 +26,23 @@ const toDirection = {
   3: "SE",
   4: "S",
   5: "SW",
-  6: "NW"
+  6: "NW",
 };
 
 const genWandering = () => [0, 1].map(() => toDirection[d6()]);
 const genEncounter = () => (d20() >= 16 ? d100() : "none");
 
-const getWeather = day => assoc("weather", genWeather(), day);
+const getWeather = (day) => assoc("weather", genWeather(), day);
 
 // seedrandom affects the Math prototype in order to provide preditable pseudorandom sequences.
-export const setSeed = seed => { seedrandom(seed, {global: true}); }
+export const setSeed = (seed) => {
+  seedrandom(seed, { global: true });
+};
 
-const getPace = day =>
+const getPace = (day) =>
   assoc("distance", [coinToss() === 1 ? 0 : 1, coinToss()], day);
-const getLost = day => assoc("lost", genWandering(), day);
-const getEncounters = day =>
+const getLost = (day) => assoc("lost", genWandering(), day);
+const getEncounters = (day) =>
   assoc("encounters", [0, 1, 2].map(genEncounter), day);
 
 const genEncounterCount = ({ maxCount, minCount }) => {
@@ -48,20 +50,23 @@ const genEncounterCount = ({ maxCount, minCount }) => {
   return minCount && roll < minCount ? roll + (minCount - roll) : roll;
 };
 
-const rollEncounter = countObj => roll => ({ terrain, table }) => {
-  const { type } = findLast(({ minRoll }) => minRoll <= roll, table);
-  const params = countObj[type];
-  const encounter = params.special
-    ? { type, info: "see book for info" }
-    : { type, count: genEncounterCount(params) };
+const rollEncounter =
+  (countObj) =>
+  (roll) =>
+  ({ terrain, table }) => {
+    const { type } = findLast(({ minRoll }) => minRoll <= roll, table);
+    const params = countObj[type];
+    const encounter = params.special
+      ? { type, info: "see book for info" }
+      : { type, count: genEncounterCount(params) };
 
-  return {
-    terrain,
-    encounter
+    return {
+      terrain,
+      encounter,
+    };
   };
-};
 
-const setEncounterDetails = day => {
+const setEncounterDetails = (day) => {
   const { encounters } = day;
 
   if (allNone(encounters)) {
@@ -77,7 +82,7 @@ const setEncounterDetails = day => {
   return assoc("encounterDetails", details, day);
 };
 
-const setPast = day => assoc("hasPassed", false, day);
+const setPast = (day) => assoc("hasPassed", false, day);
 
 export const generateDay = pipe(
   () => ({ id: v4() }),

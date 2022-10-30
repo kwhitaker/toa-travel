@@ -16,9 +16,11 @@ const EncounterTable = ({ details }) => {
   return (
     <table className="w-auto-ns w-100 ba b-white mv0-ns mv2 mh2 f6 collapse">
       <thead>
-        <th className={`${thClass} br`}>Terrain</th>
-        <th className={thClass}>Encounter</th>
-        <th className={thClass}>Count/Info</th>
+        <tr>
+          <th className={`${thClass} br`}>Terrain</th>
+          <th className={thClass}>Encounter</th>
+          <th className={thClass}>Count/Info</th>
+        </tr>
       </thead>
       <tbody>{rows}</tbody>
     </table>

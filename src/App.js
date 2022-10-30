@@ -31,6 +31,8 @@ const DEFAULT_DAYS = 79;
 
 const thClass = "bg-black light-gray pv2 ph3 fw3 f6 tl";
 
+const genSeed = () => Math.floor(Math.random() * 1000000);
+
 const genJourney = (days, seed) => {
   setSeed(seed);
   return range(0, days).map(generateDay);
@@ -53,7 +55,7 @@ export class App extends Component {
       journey: [],
       isMobile: this.mediaQuery && this.mediaQuery.matches,
       visibleDetails: null,
-      seed: Math.floor(Math.random() * 1000000),
+      seed: genSeed(),
     };
   }
 
@@ -241,14 +243,21 @@ export class App extends Component {
 
   handleChangeDays = (e) => {
     const dayCount = parseInt(e.currentTarget.value);
-    const { seed } = this.state;
+    const { seed, journey } = this.state;
+
     if (dayCount <= 0 || isNaN(dayCount) || dayCount > MAX_DAYS) {
       return;
     }
 
+    const passedDays = journey.map((d) => d.hasPassed);
+    const nextJourney = genJourney(dayCount, seed).map((d, idx) => ({
+      ...d,
+      hasPassed: passedDays[idx],
+    }));
+
     this.setState({
       dayCount,
-      journey: genJourney(dayCount, seed),
+      journey: nextJourney,
     });
   };
 
@@ -284,8 +293,21 @@ export class App extends Component {
   handleRegen = (e) => {
     e.preventDefault();
     Lockr.flush();
+
+    const { journey } = this.state;
+
+    const nextSeed = genSeed();
+    const passedDays = journey.map((d) => d.hasPassed);
+    const nextJourney = genJourney(this.state.dayCount, nextSeed).map(
+      (d, idx) => ({
+        ...d,
+        hasPassed: passedDays[idx],
+      })
+    );
+
     this.setState({
-      journey: genJourney(this.state.dayCount, this.state.seed),
+      seed: nextSeed,
+      journey: nextJourney,
     });
   };
 

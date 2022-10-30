@@ -1,3 +1,6 @@
+## MAINTENNANCE IS PAUSED
+I'll make small bug fixes, but this project is no longer being actively maintained.
+
 ## Tomb Annihilation Travelogue
 
 Generates travel days for the ToA campaign, with some additional rules from
@@ -7,6 +10,7 @@ I did this because I'm about to run ToA, and didn't want to bother with rolling
 as my group went. Also, I wanted to try [CodeSandbox](https://codesandbox.io).
 
 ### Getting Started
+Requires Node >= 16
 
 ```bash
 $ yarn
@@ -18,10 +22,3 @@ $ yarn dev
 ```bash
 $ yarn build
 ```
-
-### Todo
-
-* [x] Redo styles to be mobile-first
-* [x] Remove react dependenedent library (feather icons)
-* [x] Get a favicon
-* [ ] Implement proper analytics module

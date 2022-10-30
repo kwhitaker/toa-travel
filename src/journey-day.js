@@ -5,8 +5,13 @@ import stormSvg from "./assets/icons/cloud-lightning.svg";
 import eyeSvg from "./assets/icons/eye.svg";
 
 const tdClass = "pv2 ph3";
-const parseEncounters = (encounters) =>
-  allNone(encounters) ? `--` : encounters.join(", ");
+const parseEncounters = (encounters = []) => {
+  if (!encounters?.length) {
+    return "--";
+  }
+
+  return allNone(encounters) ? `--` : encounters.join(", ");
+};
 
 const iconMap = {
   sun: sunSvg,
@@ -54,8 +59,12 @@ const JourneyDay = (props) => {
           <img src={iconMap[weather]} className="icon" />
         </td>
       )}
-      {!forMobile && <td className={`${tdClass} tc`}>{distance.join(", ")}</td>}
-      {!forMobile && <td className={`${tdClass} tc`}>{lost.join(", ")}</td>}
+      {!forMobile && (
+        <td className={`${tdClass} tc`}>{(distance || []).join(", ")}</td>
+      )}
+      {!forMobile && (
+        <td className={`${tdClass} tc`}>{(lost || []).join(", ")}</td>
+      )}
       {!forMobile && (
         <td className={`${tdClass} flex justify-between`}>
           <span className="w-100-l w6-m w4">{parseEncounters(encounters)}</span>
@@ -64,6 +73,8 @@ const JourneyDay = (props) => {
               src={eyeSvg}
               className="icon pointer"
               onClick={onToggleDetails}
+              role="button"
+              title="View Encounters"
             />
           )}
         </td>
