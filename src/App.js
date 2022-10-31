@@ -152,7 +152,7 @@ export class App extends Component {
                 onBlur={this.handleChangeSeed}
                 id="seed-random"
                 className="w-33 pv1 ba b--black-10"
-                defaultValue={seed}
+                value={seed}
               />
               <button
                 className="f6 link dim ba ph2 pv1 dib near-black pointer ml2 bg-transparent br2 flex items-center justify-center"
@@ -281,8 +281,17 @@ export class App extends Component {
       return;
     }
 
+    const { journey, dayCount } = this.state;
+
+    const passedDays = journey.map((d) => d.hasPassed);
+    const nextJourney = genJourney(dayCount, seed).map((d, idx) => ({
+      ...d,
+      hasPassed: passedDays[idx],
+    }));
+
     this.setState({
       seed,
+      journey: nextJourney,
     });
   };
 
