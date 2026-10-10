@@ -24,3 +24,7 @@ $ yarn dev
 ```bash
 $ yarn build
 ```
+
+### Documentation
+
+[Architecture and saved state](docs/architecture.md)
