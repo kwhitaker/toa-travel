@@ -1,0 +1,18 @@
+[
+  {
+    "seed": 123456,
+    "weather": "sssssssssrsssssssssttssssssssssssssrssrrsssssrrssssssrstssssssssrstsssrssssssss"
+  },
+  {
+    "seed": "123456",
+    "weather": "sssssssssssssssssssrssssssssssssssssrsssstrsssssssssssrstrtssrtssssssssssssssss"
+  },
+  {
+    "seed": "chult",
+    "weather": "ssstssrsrssssrssstsssssrsrrsssssstsssrrrssstrstsssssssssssstsssssssssssssrsstsr"
+  },
+  {
+    "seed": 0,
+    "weather": "srssssrssssrsssssssrsssrssrsssrssssrssrssrtsssstssssssrssssrssrsssssssssssssssr"
+  }
+]

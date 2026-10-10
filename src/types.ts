@@ -1,5 +1,5 @@
 export type Seed = string | number;
-export type Weather = "sun" | "rain" | "storm";
+export type Weather = "sunny" | "light-rain" | "heavy-rain" | "storm";
 export type Direction = "N" | "NE" | "SE" | "S" | "SW" | "NW";
 export type EncounterRoll = number | "none";
 

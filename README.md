@@ -81,6 +81,26 @@ Browser storage is scoped to the origin, including hostname and port. Developmen
 and preview therefore have separate saves. To move progress from another origin,
 copy its `toajourney` value in browser DevTools and paste it into **Import Data**.
 
+## Weather
+
+Each day rolls one d20 for weather:
+
+| Roll  | Weather        | Effects                                                                                                                                           |
+| ----- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1–10  | Sunny          | Clear skies; proceed as normal.                                                                                                                   |
+| 11–15 | Light rain     | Roll 1d4 for inches of rain.                                                                                                                      |
+| 16–18 | Heavy rain     | Visibility limited to 150ft; roll 1d4+2 for inches of rain.                                                                                       |
+| 19–20 | Tropical storm | Canoe travel impossible; foot travel adds 1 exhaustion on a failed DC 15 Constitution save; disadvantage to avoid getting lost; 8 inches of rain. |
+
+Hover, focus, or tap a row's weather icon to read its rules. Press Escape to
+dismiss the tooltip. Rain amounts and saving throws are reminders for the table
+to roll; the app does not roll them automatically.
+
+New saves use `sunny`, `light-rain`, `heavy-rain`, and `storm`. Older saves/imports
+map `sun` (previously Occasional Rain) to `light-rain` and `rain` to `heavy-rain`.
+Existing days and checkmarks stay intact; regenerate to use the new weather table.
+The storage key and envelope remain unchanged.
+
 ## Migration notes
 
 - Converted application code to strict TypeScript with explicit journey,

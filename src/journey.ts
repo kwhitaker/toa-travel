@@ -85,7 +85,13 @@ export function generateJourney(
     const id = v4();
     const weatherRoll = roll(20);
     const weather =
-      weatherRoll <= 16 ? "sun" : weatherRoll <= 19 ? "rain" : "storm";
+      weatherRoll <= 10
+        ? "sunny"
+        : weatherRoll <= 15
+          ? "light-rain"
+          : weatherRoll <= 18
+            ? "heavy-rain"
+            : "storm";
     const distance: [number, number] = [roll(2) === 1 ? 0 : 1, roll(2)];
     const lost: [Direction, Direction] = [direction(), direction()];
     const encounters: [EncounterRoll, EncounterRoll, EncounterRoll] = [

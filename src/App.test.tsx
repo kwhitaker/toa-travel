@@ -40,6 +40,44 @@ describe("travelogue", () => {
     expect(loadJourney()?.journey[0]?.id).toBe(saved.journey[0]?.id);
   });
 
+  it("restores legacy occasional rain as light rain and keeps it after reopening", async () => {
+    const saved = savedJourney();
+    localStorage.setItem(
+      JOURNEY_STORAGE_KEY,
+      JSON.stringify({
+        data: {
+          ...saved,
+          journey: saved.journey.map((day) => ({
+            ...day,
+            weather: "sun",
+            hasPassed: true,
+          })),
+        },
+      }),
+    );
+    const firstRender = render(<App />);
+    await userEvent.hover(
+      screen.getByRole("button", { name: "Light Rain weather for day 1" }),
+    );
+    expect(screen.getByRole("tooltip")).toHaveTextContent(
+      "Occasional light rain - roll 1d4 for inches of rain.",
+    );
+    expect(loadJourney()?.journey[0]?.weather).toBe("light-rain");
+    firstRender.unmount();
+    render(<App />);
+    expect(
+      screen.getByRole("button", { name: "Light Rain weather for day 1" }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("checkbox", { name: "Day 1 completed" }),
+    ).toBeChecked();
+    expect(loadJourney()?.journey[0]?.id).toBe(saved.journey[0]?.id);
+    expect(screen.getByText("d20: 1–10")).toBeInTheDocument();
+    expect(screen.getByText("d20: 11–15")).toBeInTheDocument();
+    expect(screen.getByText("d20: 16–18")).toBeInTheDocument();
+    expect(screen.getByText("d20: 19–20")).toBeInTheDocument();
+  });
+
   it("preserves checkmarks when extending, changing seed, or refreshing", async () => {
     saveJourney(savedJourney());
     localStorage.setItem("other-app", "keep me");

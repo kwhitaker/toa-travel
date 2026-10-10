@@ -23,6 +23,29 @@ body {
   min-height: 18px;
 }
 
+.weather-key-item {
+  width: 50%;
+
+  @media (min-width: 30em) {
+    width: 25%;
+  }
+}
+
+.weather-trigger {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.weather-tooltip {
+  position: fixed;
+  z-index: 20;
+  width: min(20rem, calc(100vw - 1rem));
+  line-height: 1.4;
+  text-align: left;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
 .mobile-overlay {
   box-shadow: 6px 0 5px -5px rgba(0, 0, 0, 0.3);
 }

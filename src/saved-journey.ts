@@ -16,8 +16,22 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 const isNumber = (value: unknown): value is number =>
   typeof value === "number" && Number.isFinite(value);
-const isWeather = (value: unknown): value is Weather =>
-  value === "sun" || value === "rain" || value === "storm";
+function parseWeather(value: unknown): Weather | null {
+  switch (value) {
+    // Preserve the old labels: "sun" meant occasional rain, "rain" heavy rain.
+    case "sun":
+    case "light-rain":
+      return "light-rain";
+    case "rain":
+    case "heavy-rain":
+      return "heavy-rain";
+    case "sunny":
+    case "storm":
+      return value;
+    default:
+      return null;
+  }
+}
 const isDirection = (value: unknown): value is Direction =>
   value === "N" ||
   value === "NE" ||
@@ -74,11 +88,12 @@ function isEncounterRolls(
 }
 
 function parseDay(value: unknown, index: number): JourneyDayData {
+  const weather = isRecord(value) ? parseWeather(value.weather) : null;
   if (
     !isRecord(value) ||
     typeof value.id !== "string" ||
     !value.id ||
-    !isWeather(value.weather) ||
+    !weather ||
     !isPair(value.distance, isNumber) ||
     !isPair(value.lost, isDirection) ||
     !isEncounterRolls(value.encounters) ||
@@ -94,7 +109,7 @@ function parseDay(value: unknown, index: number): JourneyDayData {
 
   return {
     id: value.id,
-    weather: value.weather,
+    weather,
     distance: value.distance,
     lost: value.lost,
     encounters: value.encounters,

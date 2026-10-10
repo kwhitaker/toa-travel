@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 import { allNone, generateJourney, MAX_DAYS } from "./journey";
 import fixtures from "./test/fixtures/legacy-journeys.json";
+import legacyWeather from "./test/fixtures/legacy-weather.json";
 import type { JourneyDayData } from "./types";
 
 function withoutIds(days: JourneyDayData[]) {
@@ -15,14 +16,55 @@ function withoutIds(days: JourneyDayData[]) {
 
 describe("journey generation", () => {
   it.each(fixtures)(
-    "preserves the original rolls for seed $seed",
+    "preserves the original non-weather rolls for seed $seed",
     ({ seed, dayCount, sha256 }) => {
-      const journey = withoutIds(generateJourney(dayCount, seed));
+      const originalWeather = legacyWeather.find(
+        (entry) => entry.seed === seed,
+      );
+      expect(originalWeather?.weather).toHaveLength(dayCount);
+      // Restore the captured old weather labels solely for comparison with the
+      // unchanged original hashes. All other seeded results must still match.
+      const journey = withoutIds(generateJourney(dayCount, seed)).map(
+        (day, index) => ({
+          ...day,
+          weather:
+            originalWeather?.weather[index] === "s"
+              ? "sun"
+              : originalWeather?.weather[index] === "r"
+                ? "rain"
+                : "storm",
+        }),
+      );
       expect(
         createHash("sha256").update(JSON.stringify(journey)).digest("hex"),
       ).toBe(sha256);
     },
   );
+
+  it.each([
+    { roll: 1, seed: "weather-5", weather: "sunny" },
+    { roll: 2, seed: "weather-42", weather: "sunny" },
+    { roll: 3, seed: "weather-4", weather: "sunny" },
+    { roll: 4, seed: "weather-10", weather: "sunny" },
+    { roll: 5, seed: "weather-9", weather: "sunny" },
+    { roll: 6, seed: "weather-20", weather: "sunny" },
+    { roll: 7, seed: "weather-3", weather: "sunny" },
+    { roll: 8, seed: "weather-54", weather: "sunny" },
+    { roll: 9, seed: "weather-0", weather: "sunny" },
+    { roll: 10, seed: "weather-2", weather: "sunny" },
+    { roll: 11, seed: "weather-35", weather: "light-rain" },
+    { roll: 12, seed: "weather-36", weather: "light-rain" },
+    { roll: 13, seed: "weather-80", weather: "light-rain" },
+    { roll: 14, seed: "weather-13", weather: "light-rain" },
+    { roll: 15, seed: "weather-11", weather: "light-rain" },
+    { roll: 16, seed: "weather-51", weather: "heavy-rain" },
+    { roll: 17, seed: "weather-16", weather: "heavy-rain" },
+    { roll: 18, seed: "weather-19", weather: "heavy-rain" },
+    { roll: 19, seed: "weather-1", weather: "storm" },
+    { roll: 20, seed: "weather-28", weather: "storm" },
+  ])("maps d20 roll $roll to $weather", ({ seed, weather }) => {
+    expect(generateJourney(1, seed)[0]?.weather).toBe(weather);
+  });
 
   it("repeats rolls without reusing IDs or changing global randomness", () => {
     const originalRandom = Math.random;

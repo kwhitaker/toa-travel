@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { generateJourney } from "./journey";
 import { importJourney } from "./saved-journey";
 import { JOURNEY_STORAGE_KEY, loadJourney, saveJourney } from "./storage";
-import type { SavedJourney } from "./types";
+import type { SavedJourney, Weather } from "./types";
 
 const makeJourney = (): SavedJourney => ({
   dayCount: 2,
@@ -28,6 +28,48 @@ describe("saved journeys", () => {
 
   it("returns null when there is no save", () => {
     expect(loadJourney()).toBeNull();
+  });
+
+  it.each<Weather>(["sunny", "light-rain", "heavy-rain", "storm"])(
+    "preserves %s weather and progress through saving and reloading",
+    (weather) => {
+      const saved = makeJourney();
+      saved.journey = saved.journey.map((day) => ({
+        ...day,
+        weather,
+        hasPassed: true,
+      }));
+      saveJourney(saved);
+      expect(loadJourney()).toEqual(saved);
+    },
+  );
+
+  it.each([
+    ["sun", "light-rain"],
+    ["rain", "heavy-rain"],
+    ["storm", "storm"],
+  ])("migrates legacy %s weather to %s without rerolling", (old, weather) => {
+    const saved = makeJourney();
+    const legacy = {
+      ...saved,
+      journey: saved.journey.map((day) => ({
+        ...day,
+        weather: old,
+        hasPassed: true,
+      })),
+    };
+    const json = JSON.stringify({ data: legacy });
+    localStorage.setItem(JOURNEY_STORAGE_KEY, json);
+    const expected = {
+      ...legacy,
+      journey: legacy.journey.map((day) => ({ ...day, weather })),
+    };
+    expect(importJourney(json)).toEqual(expected);
+    const restored = loadJourney();
+    expect(restored).toEqual(expected);
+    if (!restored) throw new Error("Missing restored journey.");
+    saveJourney(restored);
+    expect(loadJourney()).toEqual(expected);
   });
 
   it("accepts previous-version day counts and missing completion flags", () => {

@@ -1,8 +1,6 @@
 import { allNone } from "./journey";
 import type { JourneyDayData } from "./types";
-import sunSvg from "./assets/icons/sun.svg";
-import rainSvg from "./assets/icons/cloud-rain.svg";
-import stormSvg from "./assets/icons/cloud-lightning.svg";
+import WeatherIcon from "./weather-icon";
 import eyeSvg from "./assets/icons/eye.svg";
 
 interface JourneyDayProps {
@@ -14,12 +12,6 @@ interface JourneyDayProps {
 }
 
 const tdClass = "pv2 ph3";
-const iconMap = { sun: sunSvg, rain: rainSvg, storm: stormSvg };
-const weatherLabels = {
-  sun: "Occasional Rain",
-  rain: "Heavy Rain",
-  storm: "Tropical Storm",
-};
 
 export default function JourneyDay({
   day,
@@ -54,11 +46,7 @@ export default function JourneyDay({
       {!forMobile && (
         <>
           <td className={`${tdClass} tc`}>
-            <img
-              src={iconMap[weather]}
-              className="icon"
-              alt={weatherLabels[weather]}
-            />
+            <WeatherIcon weather={weather} dayNumber={idx + 1} />
           </td>
           <td className={`${tdClass} tc`}>{distance.join(", ")}</td>
           <td className={`${tdClass} tc`}>{lost.join(", ")}</td>
