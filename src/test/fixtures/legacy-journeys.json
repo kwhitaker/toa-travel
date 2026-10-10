@@ -1,0 +1,22 @@
+[
+  {
+    "seed": 123456,
+    "dayCount": 79,
+    "sha256": "6b1ee4f0b9814e2a01d602f996ce50b06e4ff34ebfc25b84083b8fc6cd9c6d7e"
+  },
+  {
+    "seed": "123456",
+    "dayCount": 79,
+    "sha256": "432719466a69024e1bd24c074f142b41db634fab2bdadf124db53c75edfb71a3"
+  },
+  {
+    "seed": "chult",
+    "dayCount": 79,
+    "sha256": "8d83f99c40d19af82d0ad6b2b4b7801c009391e08c0283da877a0ea0311dd0f9"
+  },
+  {
+    "seed": 0,
+    "dayCount": 79,
+    "sha256": "972ac06d16fd6bb9a935d02827bdcc1d11518ad63e8afe236b94b376d882351b"
+  }
+]

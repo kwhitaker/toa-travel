@@ -9,6 +9,13 @@ body {
   }
 }
 
+@media (max-width: 568px) {
+  #root {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
 .icon {
   width: 18px;
   height: 18px;

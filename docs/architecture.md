@@ -1,64 +1,80 @@
 # Architecture
 
-Tomb of Annihilation Travelogue is a static, single-page D&D travel generator written in JavaScript/JSX with Preact. Generation and saved progress live in the browser. There is no application backend, API, database, authentication, or router.
+Tomb of Annihilation Travelogue is a static, single-page Preact application written
+in strict TypeScript. Vite provides development and builds. Generation and saved
+progress live in the browser; there is no application server, API, database,
+authentication, or router.
 
 ## Functionality
 
-- Generate 1–365 days (79 by default) from an editable seed, or choose a new seed with the refresh button.
-- Show weather, slow/fast travel distance, directions if lost, and three encounter checks per day. Encounter details list creatures/counts by terrain or refer to the campaign book.
-- Check off completed days, automatically restore progress, and import previous-version JSON. Includes a weather legend and mobile layout; no export UI.
+- Generate 1–365 days (79 by default) with an editable seed or a refresh button.
+- Show weather, slow/fast distance, lost directions, and three encounter checks
+  per day. Encounter details show creatures/counts by terrain or book references.
+- Check off completed days, restore progress, and import previous-version JSON.
+- Display the weather legend, encounter/import modals, and mobile day overlay.
 
-## Technologies and libraries
+## Stack
 
-Dependencies: [package.json](../package.json). Resolved versions: [yarn.lock](../yarn.lock).
+Exact installed versions are recorded in [package-lock.json](../package-lock.json).
 
-| Technology | Use |
-| --- | --- |
-| Preact 10.11.2 | Components, class-based app state, and import-modal hooks. |
-| Ramda 0.28.0 | Functional generation pipelines and immutable state transformations. |
-| seedrandom 3.0.5 | Seeded dice rolls, installed globally as `Math.random`. |
-| uuid 9.0.0 | UUID v4 identifiers for individual days. |
-| Lockr 0.9.0-beta.0 | JSON persistence through browser `localStorage`. |
-| Tachyons 4.12.0, preact-feather 4.2.1 | Utility CSS and button icons, alongside bundled SVG/image assets. |
-| Preact CLI 3.4.1 | Development/build tooling using Webpack 4 and Babel. |
-| Dart Sass (`sass`) 1.89.2, sass-loader 10.3.1 | Custom SCSS compilation; Sass is pinned for Node 16 compatibility. |
-| ESLint 8.26.0, eslint-config-synacor | Linting. |
+| Technology                              | Responsibility                                                    |
+| --------------------------------------- | ----------------------------------------------------------------- |
+| Node 24.21.0 / npm                      | Local tooling and repeatable dependency installation.             |
+| TypeScript 6                            | Strict data, component, event, and state types.                   |
+| Preact 10 / Vite 8                      | UI components and development/production builds.                  |
+| seedrandom 3 / UUID 14                  | Repeatable dice rolls and independent day identifiers.            |
+| Tachyons / Dart Sass / preact-feather   | Existing utility classes, custom SCSS, and button icons.          |
+| ESLint / typescript-eslint / Prettier   | Type-aware linting and consistent formatting.                     |
+| Vitest / jsdom / Preact Testing Library | Logic, storage, and user-interaction tests; optional V8 coverage. |
 
-`preact-compat` 3.19.0 is declared but not imported by application source. Less/Stylus tooling is declared without corresponding source styles. There is no TypeScript.
+## Code and data flow
 
-## Code layout and data flow
+| File                                                                                                                                          | Responsibility                                                                           |
+| --------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| [index.html](../index.html), [src/main.tsx](../src/main.tsx)                                                                                  | HTML shell, styling, and application mounting.                                           |
+| [src/App.tsx](../src/App.tsx)                                                                                                                 | Application state, controls, progress, persistence lifecycle, modals, and mobile layout. |
+| [src/types.ts](../src/types.ts)                                                                                                               | Shared day, encounter, seed, and saved-journey definitions.                              |
+| [src/journey.ts](../src/journey.ts)                                                                                                           | Generate days using a private seeded RNG; preserve checkmarks by position.               |
+| [src/jungle-encounters.json](../src/jungle-encounters.json)                                                                                   | Bundled terrain tables and creature count/special-event parameters.                      |
+| [src/saved-journey.ts](../src/saved-journey.ts), [src/storage.ts](../src/storage.ts)                                                          | Validate imported/saved data and read/write browser storage.                             |
+| [src/journey-day.tsx](../src/journey-day.tsx), [src/weather-key.tsx](../src/weather-key.tsx)                                                  | Travel rows and weather legend.                                                          |
+| [src/encounter-details.tsx](../src/encounter-details.tsx), [src/import-modal.tsx](../src/import-modal.tsx), [src/modal.tsx](../src/modal.tsx) | Detail tables, JSON import, and shared keyboard/focus handling.                          |
+| [public/manifest.json](../public/manifest.json), [src/style/index.scss](../src/style/index.scss)                                              | Web-app metadata and custom styles.                                                      |
 
-| File | Responsibility |
-| --- | --- |
-| [src/index.js](../src/index.js) | Set the Lockr storage prefix and mount `App`. |
-| [src/App.js](../src/App.js) | Own state, persistence, generation controls, checkmarks, modals, and mobile layout. |
-| [src/journey.js](../src/journey.js) | Generate day records: weather, pace, lost directions, encounters, and encounter details. |
-| [src/jungle-encounters.json](../src/jungle-encounters.json) | Bundled encounter tables by terrain and creature count/special-event definitions. |
-| [src/journey-day.js](../src/journey-day.js), [src/weather-key.js](../src/weather-key.js) | Render travel rows and the weather legend. |
-| [src/encounter-details.js](../src/encounter-details.js), [src/import-modal.js](../src/import-modal.js) | Encounter overlay and JSON import form. |
-| [src/style/index.scss](../src/style/index.scss), [src/template.html](../src/template.html), [src/manifest.json](../src/manifest.json) | Custom styling, HTML shell, and web-app metadata/icons. |
-
-Actions update `App` state; child components receive records and callbacks. Generation seeds the random number generator, creates day records, and looks up encounters in bundled JSON. Weather and encounters require no remote services.
+Actions update `App` state. Child components receive typed records/callbacks.
+Generation reads bundled encounter tables and needs no remote services. The
+generator retains the original dice order and numeric/text seed behavior without
+changing global `Math.random`. UUIDs are fresh on regeneration.
 
 ## Saved state
 
-**Journey state uses `localStorage`, not cookies.** Lockr has prefix `toa` and logical key `journey`.
+`localStorage` holds **`toajourney`**, using the original Lockr-compatible envelope:
+`{ data: { dayCount, seed, journey } }`. Lockr itself is no longer needed.
 
-- Saves `{ dayCount, seed, journey }`, including every day's `id`, `weather`, `distance`, `lost`, `encounters`, optional `encounterDetails`, and `hasPassed` checkbox flag.
-- On mount, restores the full snapshot without regenerating. If absent, generates the default journey with a new seed.
-- Saves after component updates, excluding temporary `isMobile`, `visibleDetails`, and `showImport` fields.
-- Changing day count or seed—including refresh—regenerates days but preserves checkmarks by **day index**. Refresh calls `Lockr.flush()` before saving the replacement.
-- Storage is per browser profile/site origin, with no device or domain sync. Clearing site storage removes progress.
+Each day stores `id`, `weather`, `distance`, `lost`, `encounters`, optional
+`encounterDetails`, and `hasPassed`. On mount, the app validates and restores this
+snapshot directly; a missing save creates the default journey. Changes to journey
+data trigger saving. Responsive layout, modal state, and error messages are not
+persisted. Regeneration retains checkmarks by day index and leaves other storage
+keys untouched.
 
-Import expects `{ "data": { "seed": ..., "dayCount": ..., "journey": [...] } }`. The inner object merges into app state and is saved normally.
+Imports use the same envelope and validator. Invalid data is rejected; legacy
+days missing `hasPassed` normalize to `false`. An unreadable save is preserved
+on initial load while a fallback journey is shown. Explicit journey changes can
+replace it. There is no saved-format version yet; future changes must preserve
+compatibility or introduce a migration.
 
-## Development and deployment
+Storage is scoped to browser profile/origin, including the port. Local development
+and production preview have separate saves. Data does not sync across devices.
 
-[.node-version](../.node-version) pins Node 16.17.0 (package minimum: 16.17.0). Run `yarn` to install, `yarn dev` to develop, and `yarn build` to generate `build/`. `yarn test` invokes ESLint and `preact test`; no test files are committed.
+## Development and verification
 
-[.github/workflows/s3-deploy.yml](../.github/workflows/s3-deploy.yml) configures `master` pushes to build and deploy to S3, invalidate CloudFront, and use repository secrets. [preact.config.js](../preact.config.js) sets the production asset path from the manifest's `start_url` (`/`). The HTML template includes a legacy Google Analytics tag, separate from journey storage.
-
-## Notes for future features
-
-- Extend rules in `journey.js`, encounter tables in JSON, and UI/state in `App` and its children. Identical seed values/types reproduce rolls with unchanged code/data; UUIDs are regenerated. Seeding replaces global `Math.random`.
-- Saved state has no schema version, migrations, or restore validation. Import validation also needs repair: `validateDay` reverses Ramda's `has` arguments and unconditionally sets `isValid = true`, overriding its checks.
+See [README](../README.md) for commands and [AGENTS.md](../AGENTS.md) for development
+conventions. [vite.config.ts](../vite.config.ts) configures Vite and Vitest.
+`npm run check` verifies formatting, linting, tests, types, and the production
+build. Regression fixtures preserve the original generated rolls, alongside UI
+and saved-data tests. [CI](../.github/workflows/checks.yml) runs the same checks on
+Node 24.21.0. Builds produce `dist/`. `vite-plugin-pwa` preserves production offline
+caching and the existing public manifest; service workers are disabled during
+development. There is no deployment workflow, analytics tag, or server-side
+rendering in this local setup.
