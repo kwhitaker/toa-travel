@@ -21,7 +21,7 @@ Dependencies: [package.json](../package.json). Resolved versions: [yarn.lock](..
 | Lockr 0.9.0-beta.0 | JSON persistence through browser `localStorage`. |
 | Tachyons 4.12.0, preact-feather 4.2.1 | Utility CSS and button icons, alongside bundled SVG/image assets. |
 | Preact CLI 3.4.1 | Development/build tooling using Webpack 4 and Babel. |
-| node-sass 7.0.3, sass-loader 10.3.1 | Custom SCSS compilation. |
+| Dart Sass (`sass`) 1.89.2, sass-loader 10.3.1 | Custom SCSS compilation; Sass is pinned for Node 16 compatibility. |
 | ESLint 8.26.0, eslint-config-synacor | Linting. |
 
 `preact-compat` 3.19.0 is declared but not imported by application source. Less/Stylus tooling is declared without corresponding source styles. There is no TypeScript.
